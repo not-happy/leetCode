@@ -8,21 +8,38 @@ class MinStack {
     private final List<Integer> data;
     private int index;
 
+    private final List<Integer> minList;
+    private int minIndex;
+    private int min;
+
     /**
      * initialize your data structure here.
      */
     public MinStack() {
         data = new ArrayList<>();
+        minList = new ArrayList<>();
         index = -1;
+        minIndex = -1;
     }
 
     public void push(int x) {
+        if (minList.isEmpty() || min >= x) {
+            min = x;
+            minList.add(min);
+            minIndex++;
+        }
         data.add(x);
         index++;
     }
 
     public void pop() {
-        data.remove(index--);
+        int r = data.remove(index--);
+        if (!minList.isEmpty() && r == minList.get(minIndex)) {
+            minList.remove(minIndex--);
+            if(minIndex >= 0){
+                min = minList.get(minIndex);
+            }
+        }
     }
 
     public int top() {
@@ -30,28 +47,21 @@ class MinStack {
     }
 
     public int getMin() {
-        int min = data.get(index);
-        for (int i = 0; i < data.size(); i++) {
-            if (min > data.get(i)) {
-                min = data.get(i);
-            }
-        }
         return min;
     }
 
     public static void main(String[] args) {
         MinStack minStack = new MinStack();
-        minStack.push(2);
-        minStack.push(0);
-        minStack.push(3);
-        minStack.push(0);
-        System.out.println(minStack.getMin());
+        minStack.push(2147483646);
+        minStack.push(2147483646);
+        minStack.push(2147483647);
         minStack.pop();
-        System.out.println(minStack.getMin());
         minStack.pop();
-        System.out.println(minStack.getMin());
         minStack.pop();
-        System.out.println(minStack.getMin());
+        minStack.push(2147483647);
+        minStack.pop();
+        minStack.push(-2147483648);
+        minStack.pop();
     }
 }
 
